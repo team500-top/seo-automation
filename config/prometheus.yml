@@ -1,0 +1,126 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    monitor: 'seo-automation'
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: []
+
+# Load rules once and periodically evaluate them
+rule_files:
+  - '/etc/prometheus/rules/*.yml'
+
+# Scrape configurations
+scrape_configs:
+  # SEO Automation metrics
+  - job_name: 'seo-automation'
+    static_configs:
+      - targets: ['host.docker.internal:3000']
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+
+  # Node exporter for system metrics
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['host.docker.internal:9100']
+
+  # MongoDB exporter
+  - job_name: 'mongodb'
+    static_configs:
+      - targets: ['host.docker.internal:9216']
+
+  # Redis exporter
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['host.docker.internal:9121']
+
+  # Docker containers metrics
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: ['host.docker.internal:8080']
+
+# Recording rules for pre-computing expensive queries
+recording_rules:
+  - name: seo_automation
+    interval: 30s
+    rules:
+      # Task success rate
+      - record: seo:task_success_rate
+        expr: |
+          rate(seo_tasks_total{status="success"}[5m]) /
+          (rate(seo_tasks_total{status="success"}[5m]) + rate(seo_tasks_total{status="failed"}[5m]))
+
+      # Average search position by engine
+      - record: seo:avg_search_position
+        expr: |
+          avg by (engine) (seo_search_position)
+
+      # Profile health distribution
+      - record: seo:profile_health_buckets
+        expr: |
+          histogram_quantile(0.5, seo_profile_health_score)
+
+# Alert rules
+alerts:
+  - name: seo_automation_alerts
+    rules:
+      # High task failure rate
+      - alert: HighTaskFailureRate
+        expr: seo:task_success_rate < 0.8
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High task failure rate detected"
+          description: "Task success rate is {{ $value | humanizePercentage }}"
+
+      # Low profile health
+      - alert: LowProfileHealth
+        expr: avg(seo_profile_health_score) < 50
+        for: 10m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Low average profile health"
+          description: "Average profile health score is {{ $value }}"
+
+      # No active profiles
+      - alert: NoActiveProfiles
+        expr: seo_profiles_active{status="active"} == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "No active profiles available"
+
+      # High memory usage
+      - alert: HighMemoryUsage
+        expr: seo_system_resources{resource="memory_heap_used"} > 7000
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage detected"
+          description: "Memory usage is {{ $value }}MB"
+
+      # Proxy failures
+      - alert: HighProxyFailureRate
+        expr: rate(seo_proxy_health{status="failed"}[5m]) > 0.3
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High proxy failure rate"
+
+      # Captcha service issues
+      - alert: CaptchaServiceFailure
+        expr: rate(seo_captchas_total{result="failed"}[5m]) > 0.5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High captcha failure rate"
