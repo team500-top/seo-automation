@@ -1,0 +1,52 @@
+{
+  "providers": [
+    {
+      "name": "mobile-proxies.ru",
+      "type": "mobile",
+      "apiUrl": "https://api.mobile-proxies.ru/v1",
+      "regions": ["RU", "BY", "KZ", "UA"],
+      "rotationInterval": 300000,
+      "concurrent": 200,
+      "retryOnFail": true,
+      "healthCheck": {
+        "enabled": true,
+        "interval": 60000,
+        "timeout": 5000
+      },
+      "config": {
+        "changeIpEndpoint": "/proxy/change_ip",
+        "statusEndpoint": "/proxy/status",
+        "authMethod": "apiKey"
+      }
+    }
+  ],
+  "validation": {
+    "checkInterval": 60000,
+    "timeout": 5000,
+    "retries": 3,
+    "blacklistCheck": true,
+    "geoVerification": true,
+    "dnsLeakTest": false
+  },
+  "rotation": {
+    "strategy": "round-robin",
+    "stickySession": true,
+    "sessionDuration": 1800000,
+    "forceRotateOnError": true,
+    "maxUsagePerProxy": 100
+  },
+  "blacklist": {
+    "autoBlacklist": true,
+    "failureThreshold": 5,
+    "captchaThreshold": 0.3,
+    "responseTimeThreshold": 10000,
+    "blacklistDuration": 86400000
+  },
+  "performance": {
+    "connectionPoolSize": 10,
+    "connectionTimeout": 30000,
+    "socketTimeout": 60000,
+    "keepAlive": true,
+    "maxRedirects": 3
+  }
+}

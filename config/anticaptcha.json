@@ -1,0 +1,84 @@
+{
+  "services": [
+    {
+      "name": "anticaptcha",
+      "priority": 1,
+      "supportedTypes": ["recaptcha", "recaptcha3", "image", "funcaptcha"],
+      "timeout": 180000,
+      "maxAttempts": 3,
+      "minBalance": 1.0,
+      "endpoints": {
+        "base": "https://api.anti-captcha.com",
+        "createTask": "/createTask",
+        "getTaskResult": "/getTaskResult",
+        "getBalance": "/getBalance",
+        "reportIncorrect": "/reportIncorrectImageCaptcha"
+      },
+      "settings": {
+        "languagePool": "ru",
+        "softId": 0,
+        "callbackUrl": null
+      }
+    },
+    {
+      "name": "2captcha",
+      "priority": 2,
+      "supportedTypes": ["recaptcha", "recaptcha3", "yandex", "image", "text"],
+      "timeout": 180000,
+      "maxAttempts": 2,
+      "minBalance": 0.5,
+      "endpoints": {
+        "base": "https://2captcha.com",
+        "submit": "/in.php",
+        "result": "/res.php"
+      },
+      "settings": {
+        "lang": "ru",
+        "json": 1,
+        "soft_id": 0
+      }
+    },
+    {
+      "name": "capsolver",
+      "priority": 3,
+      "supportedTypes": ["recaptcha", "recaptcha3", "funcaptcha", "geetest"],
+      "timeout": 120000,
+      "maxAttempts": 2,
+      "minBalance": 0.5,
+      "endpoints": {
+        "base": "https://api.capsolver.com",
+        "createTask": "/createTask",
+        "getTaskResult": "/getTaskResult",
+        "getBalance": "/getBalance"
+      },
+      "settings": {
+        "appId": null
+      }
+    }
+  ],
+  "strategy": {
+    "selection": "priority",
+    "fallback": true,
+    "parallelSolving": false,
+    "costOptimization": true,
+    "preferredService": {
+      "yandex": "2captcha",
+      "recaptcha": "anticaptcha",
+      "image": "2captcha"
+    }
+  },
+  "monitoring": {
+    "trackSuccess": true,
+    "trackCosts": true,
+    "trackSolveTime": true,
+    "alertOnLowBalance": 2.0,
+    "dailyBudgetLimit": 50.0
+  },
+  "errorHandling": {
+    "retryOnTimeout": true,
+    "retryOnWrongAnswer": true,
+    "reportWrongAnswer": true,
+    "switchServiceOnRepeatedFailure": true,
+    "maxConsecutiveFailures": 3
+  }
+}
