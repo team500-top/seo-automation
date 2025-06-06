@@ -1,0 +1,130 @@
+{
+  "name": "seo-automation",
+  "version": "1.0.0",
+  "description": "Advanced SEO automation system for search engine optimization",
+  "main": "dist/index.js",
+  "scripts": {
+    "start": "node dist/index.js",
+    "dev": "nodemon --exec ts-node src/index.ts",
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
+    "test": "jest",
+    "test:unit": "jest --testPathPattern=tests/unit",
+    "test:integration": "jest --testPathPattern=tests/integration",
+    "test:e2e": "jest --testPathPattern=tests/e2e",
+    "test:coverage": "jest --coverage",
+    "test:watch": "jest --watch",
+    "cli": "ts-node src/cli/index.ts",
+    "docker:build": "docker build -t seo-automation .",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+    "setup": "npm install && npm run build",
+    "migrate": "ts-node scripts/migrate.ts",
+    "seed": "ts-node scripts/seed.ts"
+  },
+  "keywords": [
+    "seo",
+    "automation",
+    "playwright",
+    "web-scraping",
+    "browser-automation"
+  ],
+  "author": "SEO Automation Team",
+  "license": "MIT",
+  "dependencies": {
+    "@faker-js/faker": "^8.3.1",
+    "@sentry/node": "^7.91.0",
+    "@turf/random": "^6.5.0",
+    "axios": "^1.6.5",
+    "bcrypt": "^5.1.1",
+    "bee-queue": "^1.5.0",
+    "bull": "^4.12.0",
+    "cheerio": "^1.0.0-rc.12",
+    "dayjs": "^1.11.10",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-rate-limit": "^7.1.5",
+    "geolib": "^3.3.4",
+    "got": "^14.0.0",
+    "https-proxy-agent": "^7.0.2",
+    "joi": "^17.11.0",
+    "jsonwebtoken": "^9.0.2",
+    "lodash": "^4.17.21",
+    "mongoose": "^8.0.3",
+    "node-cron": "^3.0.3",
+    "p-queue": "^8.0.1",
+    "playwright": "^1.40.1",
+    "playwright-extra": "^4.3.6",
+    "playwright-extra-plugin-stealth": "^4.3.8",
+    "prom-client": "^15.1.0",
+    "proxy-chain": "^2.4.0",
+    "puppeteer-extra-plugin-stealth": "^2.11.2",
+    "randomstring": "^1.3.0",
+    "redis": "^4.6.12",
+    "socks-proxy-agent": "^8.0.2",
+    "undici": "^6.2.1",
+    "user-agents": "^1.1.173",
+    "uuid": "^9.0.1",
+    "winston": "^3.11.0",
+    "winston-daily-rotate-file": "^4.7.1",
+    "yup": "^1.3.3"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/bull": "^4.10.0",
+    "@types/cheerio": "^0.22.35",
+    "@types/express": "^4.17.21",
+    "@types/jest": "^29.5.11",
+    "@types/jsonwebtoken": "^9.0.5",
+    "@types/lodash": "^4.14.202",
+    "@types/node": "^20.10.6",
+    "@types/node-cron": "^3.0.11",
+    "@types/randomstring": "^1.3.0",
+    "@types/uuid": "^9.0.7",
+    "@typescript-eslint/eslint-plugin": "^6.17.0",
+    "@typescript-eslint/parser": "^6.17.0",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.1.2",
+    "jest": "^29.7.0",
+    "nodemon": "^3.0.2",
+    "prettier": "^3.1.1",
+    "supertest": "^6.3.3",
+    "ts-jest": "^29.1.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "roots": [
+      "<rootDir>/src",
+      "<rootDir>/tests"
+    ],
+    "testMatch": [
+      "**/__tests__/**/*.ts",
+      "**/?(*.)+(spec|test).ts"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.ts",
+      "!src/**/*.d.ts",
+      "!src/types/**",
+      "!src/index.ts"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 70,
+        "functions": 70,
+        "lines": 70,
+        "statements": 70
+      }
+    }
+  }
+}
